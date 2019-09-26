@@ -27,12 +27,12 @@ var (
 )
 
 type AuthBearer struct {
-    secret     []byte                  // 秘钥, 它影响jwt的token生成
-    userlist   map[string]string       // 用户列表
-    ttl        time.Duration           // 存活时间纳秒, 默认为600e9
-    keepAlive  bool                    // 自动续期, 默认为true
+    secret     []byte                    // 秘钥, 它影响jwt的token生成
+    userlist   map[string]string         // 用户列表
+    ttl        time.Duration             // 存活时间纳秒, 默认为600e9
+    keepAlive  bool                      // 自动续期, 默认为true
     authOkMsg  func(token string) string // 通过认证后返回一个消息
-    authErrMsg func(err error) string  // 认证失败后返回一个消息
+    authErrMsg func(err error) string    // 认证失败后返回一个消息
 }
 
 func New(opts ...Option) *AuthBearer {
@@ -67,7 +67,7 @@ func (m *AuthBearer) Authentication() func(iris.Context) {
 
         pwd, ok := m.userlist[u.User]
         if !ok || u.Pwd != pwd {
-            msg := m.authErrMsg(zerrors.Wrap(err, "用户名或密码错误"))
+            msg := m.authErrMsg(zerrors.New("用户名或密码错误"))
             _, _ = ctx.WriteString(msg)
             return
         }
@@ -107,7 +107,7 @@ func (m *AuthBearer) MustAuth() func(iris.Context) {
         o := new(JWTData)
         err := o.ParserString(jwt, m.secret)
         if err != nil {
-            msg := m.authErrMsg(zerrors.New("token鉴权失败"))
+            msg := m.authErrMsg(zerrors.Wrap(err, "token鉴权失败"))
             _, _ = ctx.WriteString(msg)
             return
         }
