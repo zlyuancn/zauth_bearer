@@ -9,6 +9,8 @@
 package zauth_bearer
 
 import (
+    "crypto/md5"
+    "encoding/hex"
     "fmt"
     "github.com/kataras/iris"
     "github.com/zlyuancn/zerrors"
@@ -66,7 +68,7 @@ func (m *AuthBearer) Authentication() func(iris.Context) {
         }
 
         pwd, ok := m.userlist[u.User]
-        if !ok || u.Pwd != pwd {
+        if !ok || u.Pwd != Md5(pwd) {
             msg := m.authErrMsg(zerrors.New("用户名或密码错误"))
             _, _ = ctx.WriteString(msg)
             return
@@ -133,4 +135,10 @@ func (m *AuthBearer) MustAuth() func(iris.Context) {
         ctx.Header(DefaultHeadersAuthField, fmt.Sprintf("%s%s", DefaultTokenPrefix, jwt))
         ctx.Next()
     }
+}
+
+func Md5(text string) string {
+    m := md5.New()
+    m.Write([]byte(text))
+    return hex.EncodeToString(m.Sum(nil))
 }
