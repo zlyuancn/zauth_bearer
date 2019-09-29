@@ -21,6 +21,7 @@ import (
 const (
     DefaultHeadersAuthField = "Authorization"
     DefaultTokenPrefix      = "Bearer "
+    DefaultTokenPrefixLower = "bearer "
 )
 
 var (
@@ -99,9 +100,11 @@ func (m *AuthBearer) MustAuth() func(iris.Context) {
     return func(ctx iris.Context) {
         authText := ctx.GetHeader("Authorization")
         if i := strings.Index(authText, DefaultTokenPrefix); i != 0 {
-            msg := m.authErrMsg(zerrors.New("token协议错误"))
-            _, _ = ctx.WriteString(msg)
-            return
+            if i := strings.Index(authText, DefaultTokenPrefixLower); i != 0 {
+                msg := m.authErrMsg(zerrors.New("token协议错误"))
+                _, _ = ctx.WriteString(msg)
+                return
+            }
         }
 
         jwt := authText[len(DefaultTokenPrefix):]
