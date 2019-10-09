@@ -119,7 +119,7 @@ func (m *AuthBearer) MustAuth() func(iris.Context) {
 
         _, ok := m.userlist[o.User]
         if !ok {
-            msg := m.authErrMsg(zerrors.Wrap(err, "用户不存在"))
+            msg := m.authErrMsg(zerrors.New("用户不存在"))
             _, _ = ctx.WriteString(msg)
             return
         }
