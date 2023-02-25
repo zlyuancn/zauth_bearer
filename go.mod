@@ -44,5 +44,5 @@ require (
 	github.com/yudai/golcs v0.0.0-20170316035057-ecda9a501e82 // indirect
 	github.com/yudai/pp v2.0.1+incompatible // indirect
 	github.com/zlyuancn/zerrors v0.0.0-20190820062503-b26401a0950c
-	golang.org/x/crypto v0.0.0-20190923035154-9ee001bba392 // indirect
+	golang.org/x/crypto v0.1.0 // indirect
 )
